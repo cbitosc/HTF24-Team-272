@@ -3,14 +3,15 @@ from flask_cors import CORS
 from textblob import TextBlob
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for all routes
 
 @app.route('/analyze', methods=['POST'])
-def analyze():
-    post = request.json['post']
-    sentiment = TextBlob(post).sentiment.polarity
-    sentiment_label = 'Positive' if sentiment > 0 else 'Negative' if sentiment < 0 else 'Neutral'
-    return jsonify({'sentiment': sentiment_label})
+def analyze_sentiment():
+    data = request.get_json()
+    post = data.get('post', '')
+    analysis = TextBlob(post)
+    sentiment = 'positive' if analysis.sentiment.polarity > 0 else 'negative' if analysis.sentiment.polarity < 0 else 'neutral'
+    return jsonify({'sentiment': sentiment})
 
 if __name__ == '__main__':
     app.run(debug=True)
