@@ -14,14 +14,14 @@ const SentimentAnalysis = ({ token }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token, // Add token to the request headers
+                    'Authorization': token,
                 },
                 body: JSON.stringify({ post }),
             });
 
             const data = await response.json();
             setResult(data);
-            fetchHistory(); // Fetch history after analyzing
+            fetchHistory(); // Update history after analyzing
         } catch (error) {
             console.error('Error:', error);
         }
@@ -31,7 +31,7 @@ const SentimentAnalysis = ({ token }) => {
         try {
             const response = await fetch('http://localhost:5000/history', {
                 headers: {
-                    'Authorization': token, // Add token to the request headers
+                    'Authorization': token,
                 },
             });
             const data = await response.json();
@@ -42,14 +42,8 @@ const SentimentAnalysis = ({ token }) => {
     };
 
     useEffect(() => {
-        fetchHistory(); // Fetch history when component mounts
+        fetchHistory(); // Load history when component mounts
     }, []);
-
-    const getSentimentLabel = (score) => {
-        if (score > 0.5) return 'Positive';
-        else if (score < -0.5) return 'Negative';
-        return 'Neutral';
-    };
 
     return (
         <div className="sentiment-analysis">
@@ -67,17 +61,23 @@ const SentimentAnalysis = ({ token }) => {
                     <h3>Analysis Result</h3>
                     <p>Score: {result.score}</p>
                     <p>Comparative: {result.comparative}</p>
-                    <p>Emotion: {getSentimentLabel(parseFloat(result.score))}</p>
+                    <p>Emotion: {result.emotion}</p>
                 </div>
             )}
             <h3>Sentiment History</h3>
-            <ul>
-                {history.map((item, index) => (
-                    <li key={index}>
-                        <strong>Post:</strong> {item.post} <strong>Score:</strong> {item.score} <strong>Emotion:</strong> {getSentimentLabel(parseFloat(item.score))}
-                    </li>
-                ))}
-            </ul>
+            {history.length === 0 ? (
+                <p>No sentiment history available</p>
+            ) : (
+                <ul>
+                    {history.map((item, index) => (
+                        <li key={index}>
+                            <strong>Post:</strong> {item.post} <br />
+                            <strong>Score:</strong> {item.score} <br />
+                            <strong>Emotion:</strong> {item.emotion}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
