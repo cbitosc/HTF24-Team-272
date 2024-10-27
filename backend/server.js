@@ -26,9 +26,9 @@ app.post('/analyze', (req, res) => {
 
     // Determine emotion
     let emotion;
-    if (score >= 0.5) {
+    if (score >= 0.25) {
         emotion = 'Positive';
-    } else if (score <= -0.5) {
+    } else if (score <= -0.25) {
         emotion = 'Negative';
     } else {
         emotion = 'Neutral';
